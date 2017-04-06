@@ -31,17 +31,17 @@
  var port = process.env.PORT || 8000; // first change
 
  var http = require('http');
- var express = require('express'),
-    azureMobileApps = require('azure-mobile-apps');
+ var express = require('express');//,
+    //azureMobileApps = require('azure-mobile-apps');
  var bodyParser = require('body-parser');
  var swaggerize = require('swaggerize-express');
  var swaggerUi = require('swaggerize-ui'); // second change
  var path = require('path');
 
- var app = express(),
-    mobile = azureMobileApps();
-mobile.tables.add('calculationsTable');
-app.use(mobile);
+ var app = express();//,
+    //mobile = azureMobileApps();
+//mobile.tables.add('calculationsTable');
+//app.use(mobile);
 
  var server = http.createServer(app);
 
@@ -57,7 +57,7 @@ app.use(mobile);
  app.use('/docs', swaggerUi({
    docs: '/swagger'  
  }));
- app.listen(process.env.PORT || 3000);
+ //app.listen(process.env.PORT || 3000);
 
  server.listen(port, function () {
      console.log('App running on %s:%d', this.address().address, this.address().port);
