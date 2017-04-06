@@ -1,0 +1,108 @@
+swagger: '2.0'
+info:
+  version: 0.0.0
+  title: Calculations
+paths:
+  /calcs:
+    get:
+      operationId: getAllCalcs
+      parameters: []
+      responses:
+        '200':
+          description: Get all calculations
+      x-swagger-router-controller: Default
+    post:
+      operationId: postCalc
+      parameters:
+        - in: body
+          name: calc
+          description: Text of the calc we want to save
+          required: false
+          schema:
+            $ref: '#/definitions/Calc'
+      responses:
+        '201':
+          description: Calculation was correctly created
+      x-swagger-router-controller: Default
+  '/calcs/{id}':
+    get:
+      operationId: getCalcsById
+      parameters:
+        - name: id
+          in: path
+          description: Id of the calc.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Calulation was fetched correctly
+        '404':
+          description: Calculation wasn't found
+      x-swagger-router-controller: Default
+    put:
+      operationId: putCalcById
+      parameters:
+        - name: id
+          in: path
+          description: Id of the calc.
+          required: true
+          type: string
+        - in: body
+          name: calc
+          description: Text of the calc we want to save
+          required: false
+          schema:
+            $ref: '#/definitions/Calc'
+      responses:
+        '200':
+          description: Calculation was replaced.
+        '500':
+          description: Internal server error
+      x-swagger-router-controller: Default
+    delete:
+      operationId: deleteCalcsById
+      parameters:
+        - name: id
+          in: path
+          description: Id of the calc.
+          required: true
+          type: string
+        - in: body
+          name: calc
+          description: Text of the calc we want to save
+          required: false
+          schema:
+            $ref: '#/definitions/Calc'
+      responses:
+        '204':
+          description: Calc was deleted
+        '404':
+          description: Calc missing
+      x-swagger-router-controller: Default
+    patch:
+      operationId: patchCalcsById
+      parameters:
+        - name: id
+          in: path
+          description: Id of the calc.
+          required: true
+          type: string
+        - in: body
+          name: calc
+          description: Text of the calc we want to save
+          required: false
+          schema:
+            $ref: '#/definitions/Calc'
+      responses:
+        '200':
+          description: calc was changed.
+        '500':
+          description: Internal server error
+      x-swagger-router-controller: Default
+definitions:
+  Calc:
+    type: object
+    properties:
+      text:
+        type: string
+        description: The calcs of the text
