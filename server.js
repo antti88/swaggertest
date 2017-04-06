@@ -37,7 +37,7 @@
  var swaggerize = require('swaggerize-express');
  var swaggerUi = require('swaggerize-ui'); // second change
  var path = require('path');
-
+var azure = require('azure-storage');
  var app = express(),
     mobile = azureMobileApps();
     // Define the database schema that is exposed
