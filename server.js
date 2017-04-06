@@ -53,11 +53,24 @@ mobile.tables.initialize().then(function () {
 
 var tableSvc = azure.createTableService();
 
-tableSvc.createTableIfNotExists('testtable', function(error, result, response){
+tableSvc.createTableIfNotExists('testTable', function(error, result, response){
   if(!error){
     // Table exists or created
   }
 });
+var task = {
+  PartitionKey: {'_':'hometasks'},
+  RowKey: {'_': '1'},
+  description: {'_':'take out the trash'},
+  dueDate: {'_':new Date(2015, 6, 20), '$':'Edm.DateTime'}
+};
+
+tableSvc.insertEntity('testTable',task, function (error, result, response) {
+  if(!error){
+    // Entity inserted
+  }
+});
+
 //mobile.tables.add('calculationsTable');
 //app.use(mobile);
 
