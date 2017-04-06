@@ -50,6 +50,14 @@ mobile.tables.initialize().then(function () {
     // Start listening on HTTP
     app.listen(process.env.PORT || 3000);
 });
+
+var tableSvc = azure.createTableService();
+
+tableSvc.createTableIfNotExists('testtable', function(error, result, response){
+  if(!error){
+    // Table exists or created
+  }
+});
 //mobile.tables.add('calculationsTable');
 //app.use(mobile);
 
