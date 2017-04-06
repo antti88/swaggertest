@@ -31,15 +31,25 @@
  var port = process.env.PORT || 8000; // first change
 
  var http = require('http');
- var express = require('express');//,
-    //azureMobileApps = require('azure-mobile-apps');
+ var express = require('express'),
+    azureMobileApps = require('azure-mobile-apps');
  var bodyParser = require('body-parser');
  var swaggerize = require('swaggerize-express');
  var swaggerUi = require('swaggerize-ui'); // second change
  var path = require('path');
 
- var app = express();//,
-    //mobile = azureMobileApps();
+ var app = express(),
+    mobile = azureMobileApps();
+    // Define the database schema that is exposed
+mobile.tables.import('./tables');
+// Provide initialization of any tables that are statically defined
+mobile.tables.initialize().then(function () {
+    // Add the mobile API so it is accessible as a Web API
+    app.use(mobile);
+
+    // Start listening on HTTP
+    app.listen(process.env.PORT || 3000);
+});
 //mobile.tables.add('calculationsTable');
 //app.use(mobile);
 
