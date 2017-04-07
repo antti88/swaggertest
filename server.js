@@ -31,65 +31,74 @@
  var port = process.env.PORT || 8000; // first change
 
  var http = require('http');
- var express = require('express'),
-    azureMobileApps = require('azure-mobile-apps');
+ var express = require('express');
  var bodyParser = require('body-parser');
  var swaggerize = require('swaggerize-express');
  var swaggerUi = require('swaggerize-ui'); // second change
- var path = require('path');
-var azure = require('azure-storage');
- var app = express(),
-    mobile = azureMobileApps();
-    // Define the database schema that is exposed
-mobile.tables.import('./tables');
-// Provide initialization of any tables that are statically defined
-mobile.tables.initialize().then(function () {
-    // Add the mobile API so it is accessible as a Web API
-    app.use(mobile);
+ var path = require('path'),
+    app = require('express')(),
+    mobileApps = require('azure-mobile-apps'),
+    configuration = require('azure-mobile-apps/src/configuration'),
+    mobileApp,
 
-    // Start listening on HTTP
-    app.listen(process.env.PORT || 3000);
-});
+    config = {
+        skipVersionCheck: true,
+        pageSize: 1000,
+        auth: { secret: 'secret' }
+    };
 
-var tableSvc = azure.createTableService();
+mobileApp = mobileApps(config);
 
-tableSvc.createTableIfNotExists('testTable', function(error, result, response){
-  if(!error){
-    // Table exists or created
-  }
-});
-var task = {
-  PartitionKey: {'_':'hometasks'},
-  RowKey: {'_': '1'},
-  description: {'_':'take out the trash'},
-  dueDate: {'_':new Date(2015, 6, 20), '$':'Edm.DateTime'}
-};
+// tables
+mobileApp.tables.add('calculations',{ columns: { postId: 'string', commentText: 'string', name: 'string', test: 'number' } });
+mobileApp.tables.import('tables');
 
-tableSvc.insertEntity('testTable',task, function (error, result, response) {
-  if(!error){
-    // Entity inserted
-  }
-});
+app.use(mobileApp);
 
-//mobile.tables.add('calculationsTable');
-//app.use(mobile);
-
- var server = http.createServer(app);
-
- app.use(bodyParser.json());
+// custom APIs
+app.get('/api/jwtTokenGenerator', require('./api/jwtTokenGenerator')(mobileApp.configuration));
+app.get('/api/runtimeInfo', require('./api/runtimeInfo'));
+require('./api/applicationPermission').register(app);
+//require('./api/movieFinder').register(app);
+require('./api/push').register(app);
+app.use(bodyParser.json());
 
  app.use(swaggerize({
      api: path.resolve('./config/swagger.yaml'), // third change
      handlers: path.resolve('./handlers'),
      docspath: '/swagger' // fourth change
  }));
+ var server = http.createServer(app);
 
  // change four
  app.use('/docs', swaggerUi({
    docs: '/swagger'  
  }));
- //app.listen(process.env.PORT || 3000);
-
- server.listen(port, function () {
+mobileApp.tables.initialize().then(function () {
+    server.listen(port, function () {
      console.log('App running on %s:%d', this.address().address, this.address().port);
  });
+});
+ 
+
+//app.use(mobileApp);
+// app.listen(process.env.PORT || 3000);
+//  var server = http.createServer(app);
+
+//  app.use(bodyParser.json());
+
+//  app.use(swaggerize({
+//      api: path.resolve('./config/swagger.yaml'), // third change
+//      handlers: path.resolve('./handlers'),
+//      docspath: '/swagger' // fourth change
+//  }));
+
+//  // change four
+//  app.use('/docs', swaggerUi({
+//    docs: '/swagger'  
+//  }));
+//  //app.listen(process.env.PORT || 3000);
+
+//  server.listen(port, function () {
+//      console.log('App running on %s:%d', this.address().address, this.address().port);
+//  });

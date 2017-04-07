@@ -1,6 +1,7 @@
 'use strict';
 var dataProvider = require('../data/calcs.js');
 var repository = require('../lib/contactRepository');
+var table = module.exports = require('azure-mobile-apps').table();
 /**
  * Operations on /calcs
  */
@@ -19,15 +20,19 @@ module.exports = {
          */
         var status = 200;
         var provider = dataProvider['get']['200'];
-        res.json(repository.all());
-        provider(req, res, function (err, data) {
-            if (err) {
-                next(err);
-                return;
-            }
-            res.status(status).send(data && data.responses);
-        });
+        var tablecalc = req.azureMobile.tables('calculations');
+
+        res.json(tablecalc);
+
     },
+    //     provider(req, res, function (err, data) {
+    //         if (err) {
+    //             next(err);
+    //             return;
+    //         }
+    //         res.status(status).send(data && data.responses);
+    //     });
+    // },
     /**
      * summary: 
      * description: 
