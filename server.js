@@ -56,11 +56,11 @@ mobileApp.tables.import('tables');
 app.use(mobileApp);
 
 // custom APIs
-app.get('/api/jwtTokenGenerator', require('./api/jwtTokenGenerator')(mobileApp.configuration));
-app.get('/api/runtimeInfo', require('./api/runtimeInfo'));
-require('./api/applicationPermission').register(app);
+//app.get('/api/jwtTokenGenerator', require('./api/jwtTokenGenerator')(mobileApp.configuration));
+//app.get('/api/runtimeInfo', require('./api/runtimeInfo'));
+//require('./api/applicationPermission').register(app);
 //require('./api/movieFinder').register(app);
-require('./api/push').register(app);
+//require('./api/push').register(app);
 app.use(bodyParser.json());
 
  app.use(swaggerize({
